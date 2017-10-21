@@ -13,20 +13,8 @@
         <java.plugin.version>4.5.0.8398</java.plugin.version>
     </properties>
     <name>Java Hystrix Rules</name>
-
-    <plugin>
-        <groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
-        <artifactId>sonar-packaging-maven-plugin</artifactId>
-        <version>1.17</version>
-        <extensions>true</extensions>
-        <configuration>
-            <pluginKey>java-hystrix</pluginKey>
-            <pluginName>Java hystrix Rules</pluginName>
-            <pluginClass>org.ksarch.snoar.HystrixRulesPlugin</pluginClass>
-            <sonarLintSupported>true</sonarLintSupported>
-            <sonarQubeMinVersion>5.6</sonarQubeMinVersion> <!-- allow to depend on API 6.x but run on LTS -->
-        </configuration>
-    </plugin>
+    <description>Java Custom Hystrix Rules for SonarQube</description>
+    <inceptionYear>2017</inceptionYear>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.sonarsource.java/sonar-java-plugin -->
@@ -60,5 +48,21 @@
         </dependency>
     </dependencies>>
 
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
+                    <artifactId>sonar-packaging-maven-plugin</artifactId>
+                    <version>1.17</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <pluginKey>java-hystrix</pluginKey>
+                        <pluginName>Java Custom Hystrix Rules</pluginName>
+                        <pluginClass>org.ksarch.sonar.HystrixRulesPlugin</pluginClass>
+                        <sonarLintSupported>true</sonarLintSupported>
+                        <sonarQubeMinVersion>5.6</sonarQubeMinVersion> <!-- allow to depend on API 6.x but run on LTS -->
+                    </configuration>
+             </plugin>
+         </plugins>
+    </build>
 </project>
