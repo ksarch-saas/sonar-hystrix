@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.ksarch.sonar</groupId>
+    <artifactId>java-hystrix-rules</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <sonar.version>6.0</sonar.version>
+        <java.plugin.version>4.5.0.8398</java.plugin.version>
+    </properties>
+    <name>Java Hystrix Rules</name>
+
+    <plugin>
+        <groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
+        <artifactId>sonar-packaging-maven-plugin</artifactId>
+        <version>1.17</version>
+        <extensions>true</extensions>
+        <configuration>
+            <pluginKey>java-hystrix</pluginKey>
+            <pluginName>Java hystrix Rules</pluginName>
+            <pluginClass>org.ksarch.snoar.HystrixRulesPlugin</pluginClass>
+            <sonarLintSupported>true</sonarLintSupported>
+            <sonarQubeMinVersion>5.6</sonarQubeMinVersion> <!-- allow to depend on API 6.x but run on LTS -->
+        </configuration>
+    </plugin>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.sonarsource.java/sonar-java-plugin -->
+        <dependency>
+            <groupId>org.sonarsource.java</groupId>
+            <artifactId>sonar-java-plugin</artifactId>
+            <version>4.14.0.11784</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.sonarsource.java/java-checks -->
+        <dependency>
+            <groupId>org.sonarsource.java</groupId>
+            <artifactId>java-checks</artifactId>
+            <version>4.14.0.11784</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.sonarsource.sonarqube/sonar-plugin-api -->
+        <dependency>
+            <groupId>org.sonarsource.sonarqube</groupId>
+            <artifactId>sonar-plugin-api</artifactId>
+            <version>6.5</version>
+        </dependency>
+    </dependencies>>
+
+
+</project>
