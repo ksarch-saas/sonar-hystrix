@@ -38,7 +38,6 @@ import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.server.rule.RulesDefinitionAnnotationLoader;
 import org.sonar.api.utils.AnnotationUtils;
 import org.sonar.check.Cardinality;
-import org.sonar.plugins.java.Java;
 import org.sonar.squidbridge.annotations.RuleTemplate;
 
 /**
@@ -48,7 +47,7 @@ import org.sonar.squidbridge.annotations.RuleTemplate;
 public class HystrixRulesDefinition implements RulesDefinition {
 
     // don't change that because the path is hard coded in CheckVerifier
-    private static final String RESOURCE_BASE_PATH = "/org/sonar/l10n/java/rules/squid";
+    private static final String RESOURCE_BASE_PATH = "/org/sonar/l10n/java/rules/hystrix";
 
     public static final String REPOSITORY_KEY = "ksarch-java";
 
@@ -56,7 +55,7 @@ public class HystrixRulesDefinition implements RulesDefinition {
 
     public void define(Context context) {
         NewRepository repository = context
-                .createRepository(REPOSITORY_KEY, Java.KEY)
+                .createRepository(REPOSITORY_KEY, "java")
                 .setName("Ksarch Hyrstrix Repository");
 
         List<Class> checks = RulesList.getChecks();

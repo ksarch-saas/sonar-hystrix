@@ -1,5 +1,7 @@
 package org.ksarch.sonar.checks;
 
+import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
 import org.sonar.plugins.java.api.JavaFileScanner;
 import org.sonar.plugins.java.api.JavaFileScannerContext;
 import org.sonar.plugins.java.api.tree.BaseTreeVisitor;
@@ -10,6 +12,8 @@ import java.lang.annotation.*;
 import java.lang.reflect.Method;
 import java.util.List;
 
+
+@Rule(key = "HystrixCheck", name = "Fallback")
 public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
