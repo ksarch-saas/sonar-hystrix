@@ -1,5 +1,6 @@
 package org.ksarch.sonar.checks;
 
+import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +14,13 @@ import org.sonar.plugins.java.api.tree.*;
 import java.beans.Expression;
 import java.lang.annotation.*;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
 
 
 @Rule(key = "HystrixCheck", name = "Fallback")
 public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
     private JavaFileScannerContext context;
-    private Boolean implementsHystrix = Boolean.FALSE;
     private static final Logger LOGGER = LoggerFactory.getLogger(HystrixCheck.class);
 
     public void scanFile(JavaFileScannerContext context) {
@@ -27,18 +28,18 @@ public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
         scan(context.getTree());
     }
 
-    private Boolean vaildateAnnotation(List<AnnotationTree> annotations, String name, String key) {
-        Boolean retVal = Boolean.TRUE;
+    private static boolean vaildateAnnotation(List<AnnotationTree> annotations, String name, String key) {
+        boolean retVal = true;
         for (AnnotationTree annotationTree : annotations) {
             if (annotationTree.annotationType().is(Tree.Kind.IDENTIFIER)) {
-                retVal = Boolean.FALSE;
+                retVal = false;
                 IdentifierTree idf = (IdentifierTree)annotationTree.annotationType();
                 for (ExpressionTree argument : annotationTree.arguments()) {
                     if (argument.is(Tree.Kind.ASSIGNMENT)) {
                         AssignmentExpressionTree assignmentExpressionTree = (AssignmentExpressionTree) argument;
                         IdentifierTree nameTree = (IdentifierTree) assignmentExpressionTree.variable();
                         if (nameTree.name().equals(key)) {
-                            retVal = Boolean.TRUE;
+                            retVal = true;
                         }
                     }
                 }
@@ -47,10 +48,43 @@ public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
         return retVal;
     }
 
+    private static boolean isThisOrSuper(Symbol symbol) {
+        String name = symbol.name();
+        return "this".equals(name) || "super".equals(name);
+    }
+
+    private static boolean isConstructor(Symbol symbol) {
+        return "<init>".equals(symbol.name());
+    }
+
+    private static Collection<Symbol> filterMethod(Collection<Symbol> symbols) {
+        List<Symbol> methods = Lists.newArrayList();
+        for (Symbol symbol : symbols) {
+            if (symbol.isMethodSymbol() && !isConstructor(symbol)) {
+                methods.add(symbol);
+            }
+        }
+        return methods;
+    }
+
+    private static boolean hasMehtod(Symbol.TypeSymbol classSymbol, String methodName) {
+        Collection<Symbol> symbols = filterMethod(classSymbol.memberSymbols());
+        if (symbols.isEmpty()) {
+            return false;
+        }
+
+        for (Symbol symbol : symbols) {
+            if (symbol.name().equals(methodName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void visitMethod(MethodTree tree) {
         List<AnnotationTree> annotations = tree.modifiers().annotations();
-        Boolean retVal = vaildateAnnotation(annotations, "HystrixCommand", "fallbackMethod");
+        boolean retVal = vaildateAnnotation(annotations, "HystrixCommand", "fallbackMethod");
         if (!retVal) {
             context.reportIssue(this, tree, String.format("There is no Hystrix fallback method in class @%s", tree.simpleName()));
         }
@@ -65,14 +99,7 @@ public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
             String superClassName = tree.superClass().symbolType().name();
             if (superClassName.equals("HystrixCommand")) {
                 /* hystrix command, find the method 'getFallback'*/
-                List<TypeTree> interfaces = tree.superInterfaces();
-                for (TypeTree typeTree : interfaces) {
-                    if ("getFallback".equals(typeTree.toString())) {
-                        implementsHystrix = Boolean.TRUE;
-                    }
-                }
-
-                if (!implementsHystrix) {
+                if (!hasMehtod(tree.symbol(), "getfallback")) {
                     /* no fallback found, report the defect */
                     context.reportIssue(this, tree, String.format("There is no Hystrix fallback method in class @%s", tree.simpleName()));
                 }
