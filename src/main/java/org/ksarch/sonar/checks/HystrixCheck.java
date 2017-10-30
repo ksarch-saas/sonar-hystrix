@@ -28,7 +28,7 @@ public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
         scan(context.getTree());
     }
 
-    private static boolean vaildateAnnotation(List<AnnotationTree> annotations, String name, String key) {
+    private static boolean validateAnnotation(List<AnnotationTree> annotations, String name, String key) {
         boolean retVal = true;
         for (AnnotationTree annotationTree : annotations) {
             if (annotationTree.annotationType().is(Tree.Kind.IDENTIFIER)) {
@@ -84,7 +84,7 @@ public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
     @Override
     public void visitMethod(MethodTree tree) {
         List<AnnotationTree> annotations = tree.modifiers().annotations();
-        boolean retVal = vaildateAnnotation(annotations, "HystrixCommand", "fallbackMethod");
+        boolean retVal = validateAnnotation(annotations, "HystrixCommand", "fallbackMethod");
         if (!retVal) {
             context.reportIssue(this, tree, String.format("There is no Hystrix fallback method in class @%s", tree.simpleName()));
         }
@@ -108,7 +108,7 @@ public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
 
         /* check FeignClient */
         List<AnnotationTree> annotations = tree.modifiers().annotations();
-        boolean retVal = vaildateAnnotation(annotations, "FeignClient", "fallback");
+        boolean retVal = validateAnnotation(annotations, "FeignClient", "fallback");
         if (!retVal) {
             context.reportIssue(this, tree, String.format("There is no Hystrix fallback processor for class @%s", tree.simpleName()));
         }
