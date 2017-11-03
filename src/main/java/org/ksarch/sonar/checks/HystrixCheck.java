@@ -86,7 +86,7 @@ public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
         List<AnnotationTree> annotations = tree.modifiers().annotations();
         boolean retVal = validateAnnotation(annotations, "HystrixCommand", "fallbackMethod");
         if (!retVal) {
-            context.reportIssue(this, tree, String.format("There is no Hystrix fallback method in class @%s", tree.simpleName()));
+            context.reportIssue(this, tree, String.format("There is no Hystrix fallback for method %s", tree.simpleName()));
         }
         super.visitMethod(tree);
     }
@@ -101,7 +101,7 @@ public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
                 /* hystrix command, find the method 'getFallback'*/
                 if (!hasMehtod(tree.symbol(), "getfallback")) {
                     /* no fallback found, report the defect */
-                    context.reportIssue(this, tree, String.format("There is no Hystrix fallback method in class @%s", tree.simpleName()));
+                    context.reportIssue(this, tree, String.format("There is no Hystrix fallback method in class %s", tree.simpleName()));
                 }
             }
         }
@@ -110,7 +110,7 @@ public class HystrixCheck extends BaseTreeVisitor implements JavaFileScanner {
         List<AnnotationTree> annotations = tree.modifiers().annotations();
         boolean retVal = validateAnnotation(annotations, "FeignClient", "fallback");
         if (!retVal) {
-            context.reportIssue(this, tree, String.format("There is no Hystrix fallback processor for class @%s", tree.simpleName()));
+            context.reportIssue(this, tree, String.format("There is no Hystrix fallback processor for class %s", tree.simpleName()));
         }
 
         super.visitClass(tree);
